@@ -1,0 +1,1 @@
+{"dest":"WORKSPACE/tmp/evil.txt","error":"invalid_input","hint":"validate dest: path traversal outside allowed root: path traversal"}

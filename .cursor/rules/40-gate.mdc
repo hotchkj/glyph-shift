@@ -1,0 +1,5 @@
+---
+description: "Quality gate MUST pass before completion: CRAP < 8, coverage > 90%, CI matches local"
+alwaysApply: false
+---
+Work is not complete until the quality gate passes. Read docs/kb/linting.md.

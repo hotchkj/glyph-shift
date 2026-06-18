@@ -1,0 +1,5 @@
+---
+description: "Tool output is a prompt — success is silence, failure is ERROR/Fix/Hint, never noise"
+alwaysApply: false
+---
+Tool output is a prompt for the next agent action. Read docs/kb/agent-output.md before designing diagnostics or CLI responses.

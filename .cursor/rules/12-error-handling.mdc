@@ -1,0 +1,5 @@
+---
+description: "Fail explicitly with classified errors — silent returns and catch-all handlers mask bugs"
+alwaysApply: false
+---
+Read docs/kb/error-handling.md before designing error paths — silent failures and unclassified errors are rejected.

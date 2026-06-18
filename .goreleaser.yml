@@ -1,0 +1,59 @@
+# v* tags: build CLI binaries and publish GitHub Release (archives + checksums).
+version: 2
+
+project_name: glyph-shift
+
+snapshot:
+  # Align with mage crosscompile VERSION default "dev"; ldflags/hooks/templates use {{ .Version }}.
+  version_template: '{{ if index .Env "VERSION" }}{{ .Env.VERSION }}{{ else }}dev{{ end }}'
+
+before:
+  hooks:
+    - go mod download
+    - go run github.com/magefile/mage@v1.17.0 release:windowsresources {{ .Version }} -commit={{ .Commit }}
+
+builds:
+  - id: glyph-shift
+    main: .
+    binary: glyph-shift
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+
+  - id: glyph-shift-windows
+    main: .
+    binary: glyph-shift
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+
+archives:
+  - id: tarballs
+    # GitHub Release asset names: glyph-shift_{semver}_{os}_{arch}.tar.gz|.zip
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+release:
+  skip_upload: true

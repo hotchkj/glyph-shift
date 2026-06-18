@@ -1,0 +1,5 @@
+---
+description: "Commit signing and hooks are mandatory — commits without signing will be rejected"
+alwaysApply: false
+---
+Both signing and hooks are required. Read docs/kb/committing.md — commits bypassing either are rejected.

@@ -1,0 +1,5 @@
+---
+description: "STRICT test isolation: unit tests MUST NOT use real IO, network, filesystem, or sleeps"
+alwaysApply: false
+---
+Tests that touch real IO fail the quality gate. Read docs/kb/testing.md before writing tests.

@@ -1,0 +1,105 @@
+# Push to main/master and all pull requests: validate, cross-compile matrix smoke, stricttiming (release.yml waits for this on main/master).
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  GOPRIVATE: github.com/hotchkj/*
+
+jobs:
+  validate:
+    name: validate (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: configure private module access
+        run: gh auth setup-git
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: |
+            go.mod
+            go.sum
+
+      - name: run full quality gate
+        run: go run github.com/magefile/mage@v1.17.0 validate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  cross-compile:
+    name: cross-compile release matrix (ubuntu)
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: configure private module access
+        run: gh auth setup-git
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: |
+            go.mod
+            go.sum
+
+      - name: goreleaser release snapshot smoke (all platforms)
+        run: |
+          go run github.com/magefile/mage@v1.17.0 crosscompile
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: 0.0.0-ci
+
+      - name: upload goreleaser build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-compile
+          path: dist/
+
+  stricttiming:
+    name: strict timing (ubuntu)
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: configure private module access
+        run: gh auth setup-git
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+          cache: true
+          cache-dependency-path: |
+            go.mod
+            go.sum
+
+      - name: run strict timing gate
+        run: go run github.com/magefile/mage@v1.17.0 stricttiming
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

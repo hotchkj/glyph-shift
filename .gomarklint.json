@@ -1,0 +1,11 @@
+{
+  "include": ["."],
+  "ignore": [
+    "dist/**",
+    "features/testdata/**",
+    "features\\testdata\\**"
+  ],
+  "rules": {
+    "heading-level": { "severity": "error", "minLevel": 1 }
+  }
+}

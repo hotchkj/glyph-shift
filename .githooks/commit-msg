@@ -1,0 +1,30 @@
+#!/bin/sh
+# Enforces Conventional Commits format on commit messages.
+# Covers: feat, fix, chore, docs, refactor, test, ci, build, perf, style, revert
+# Breaking changes: feat!: or BREAKING CHANGE: in body
+
+MSG_FILE="$1"
+MSG=$(cat "$MSG_FILE")
+
+# Strip comments (lines starting with #)
+STRIPPED=$(echo "$MSG" | grep -v '^#')
+# Check only the first line (subject)
+SUBJECT=$(echo "$STRIPPED" | head -n 1)
+
+PATTERN='^(feat|fix|chore|docs|refactor|test|ci|build|perf|style|revert)(\(.+\))?(!)?: .+'
+
+if ! echo "$SUBJECT" | grep -qE "$PATTERN"; then
+	echo ""
+	echo "ERROR: Commit message does not follow Conventional Commits format."
+	echo ""
+	echo "  Expected: <type>[optional scope][optional !]: <description>"
+	echo "  Example:  feat(auth): add JWT support"
+	echo "  Example:  fix!: remove deprecated --legacy flag"
+	echo ""
+	echo "  Valid types: feat, fix, chore, docs, refactor, test, ci, build, perf, style, revert"
+	echo "  Breaking change: append ! after type, e.g. feat!:"
+	echo ""
+	exit 1
+fi
+
+exit 0

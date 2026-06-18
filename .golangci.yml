@@ -1,0 +1,238 @@
+version: "2"
+run:
+  timeout: 2m
+  modules-download-mode: readonly
+  relative-path-mode: wd
+  allow-serial-runners: true
+  build-tags:
+    - mage
+    - integration
+    - performance
+    - bdd_strict_timing
+
+linters:
+  enable:
+    - errcheck
+    - err113
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - sloglint
+    - errorlint
+    - bodyclose
+    - gosec
+    - noctx
+    - unparam
+    - gocyclo
+    - gocognit
+    - funlen
+    - lll
+    - cyclop
+    - revive
+    - goconst
+    - nakedret
+    - copyloopvar
+    - gomodguard
+    - godox
+    - godot
+    - testifylint
+    - mnd
+    - exhaustive
+    - gocritic
+    - varnamelen
+    - depguard
+    - forbidigo
+  settings:
+    govet:
+      enable:
+        - shadow
+    staticcheck:
+      checks:
+        - all
+        - -ST1000
+        - -ST1016
+        - -ST1020
+        - -ST1021
+        - -ST1022
+    gocyclo:
+      min-complexity: 10
+    cyclop:
+      max-complexity: 12
+      package-average: 4
+    gocognit:
+      min-complexity: 15
+    funlen:
+      lines: 80
+      statements: 50
+      ignore-comments: true
+    lll:
+      line-length: 120
+      tab-width: 1
+    revive:
+      rules:
+        - name: file-length-limit
+          arguments:
+            - max: 500
+              skipComments: true
+              skipBlankLines: true
+        - name: var-naming
+          arguments:
+            - ["ID", "URL", "HTTP", "JSON", "XML", "API", "UUID"]
+            - []
+            - - skip-initialism-name-checks: false
+                upper-case-const: false
+        - name: receiver-naming
+    goconst:
+      min-len: 3
+      min-occurrences: 3
+    godox:
+      keywords:
+        - TODO
+        - FIXME
+        - BUG
+        - OPTIMIZE
+        - HACK
+    godot:
+      period: false
+      capital: false
+    testifylint:
+      enable:
+        - bool-compare
+        - compares
+        - empty
+        - error-is-as
+        - len
+        - expected-actual
+        - suite-dont-use-pkg
+        - suite-extra-assert-call
+    mnd:
+      checks:
+        - argument
+        - condition
+        - operation
+        - return
+    gocritic:
+      enabled-tags:
+        - performance
+        - style
+        - diagnostic
+    varnamelen:
+      min-name-length: 2
+    depguard:
+      rules:
+        test-isolation:
+          files:
+            - "$test"
+            - "**/features/steps/**/*.go"
+          deny:
+            - pkg: net
+              desc: "Unit tests must not use raw network primitives"
+            - pkg: net/http
+              desc: "Unit tests must not import the HTTP stack"
+            - pkg: net/http/httputil
+              desc: "Unit tests must not use reverse-proxy HTTP plumbing"
+            - pkg: crypto/tls
+              desc: "Unit tests must not use TLS directly"
+            - pkg: os/exec
+              desc: "Unit tests must not spawn subprocesses"
+            - pkg: syscall
+              desc: "Unit tests must not import syscall"
+            - pkg: io/ioutil
+              desc: "io/ioutil is deprecated; use io/os from production code"
+            - pkg: os
+              desc: "do not import os in unit tests or BDD step glue — OS-backed fixture/golden reads live in internal/goldenreader only"
+        goldenreader-os-boundary:
+          files:
+            - "**/internal/goldenreader/**/*.go"
+          deny:
+            - pkg: os/exec
+              desc: "goldenreader must not spawn subprocesses"
+            - pkg: net
+              desc: "goldenreader must not use raw network primitives"
+            - pkg: net/http
+              desc: "goldenreader must not import the HTTP stack"
+            - pkg: crypto/tls
+              desc: "goldenreader must not use TLS directly"
+        library-internals:
+          files:
+            - "**/internal/harness/**/*.go"
+            - "**/internal/gatecheck/**/*.go"
+            - "**/gatetest/**/*.go"
+          deny:
+            - pkg: os
+              desc: "library internals must use FileOps (afero); os is only allowed in boundary packages"
+            - pkg: os/exec
+              desc: "library internals must use CommandRunner; os/exec is only allowed in cmdrunner"
+    forbidigo:
+      analyze-types: true
+      forbid:
+        - pattern: ^testing\.T\.TempDir$
+          msg: "Unit tests must not use t.TempDir; use fstest.MapFS / in-memory fakes"
+        - pattern: ^os\.Getwd$
+          msg: "Unit tests must not read the process working directory; use paths from the BDD harness, injected roots, or io/fs-based fakes"
+        - pattern: ^os\.(WriteFile|ReadFile|Open|OpenFile|Create|CreateTemp|Mkdir|MkdirAll|MkdirTemp|Remove|RemoveAll|Rename|Chdir|Truncate|Stat|Lstat)$
+          msg: "Unit tests must not call os file I/O; use io/fs"
+        - pattern: ^time\.Sleep$
+          msg: "Unit tests must not use time.Sleep; prefer deterministic synchronization"
+        - pattern: ^strings\.Contains$
+          msg: "use strings.HasPrefix, strings.HasSuffix, strings.EqualFold, or exact match instead of strings.Contains in tests"
+        - pattern: ^(httptest\.(NewServer|NewTLSServer|NewUnstartedServer))$
+          msg: "Unit tests must not create listener-backed servers; use NewRecorder"
+        - pattern: ^(net\.(Listen|Dial|DialContext|DialTimeout))$
+          msg: "Unit tests must not perform network I/O; use fakes"
+        - pattern: ^afero\.NewOsFs$
+          msg: "tests must not use afero's OS backend; use gatetest.NewMemoryFileOps()"
+        - pattern: ^(gate|cmdrunner)\.NewProductionRunner$
+          msg: "inject a fake CommandRunner; do not construct the production runner"
+        - pattern: ^gate\.NewProductionFileOps$
+          msg: "inject a fake FileOps; do not construct the production filesystem in tests"
+        - pattern: ^(gate|cmdrunner)\.NewProductionToolResolver$
+          msg: "inject a fake ToolResolver; do not construct the production resolver in tests"
+        - pattern: ^gate\.NewArtifactStore$
+          msg: "inject a fake ArtifactStore; do not construct the production store in tests"
+        - pattern: ^fileops\.NewOSFileSession$
+          msg: "inject a fake FileSession (testutil.NewMemFileSession); do not construct the production session in tests"
+        - pattern: ^pipeline\.NewOSSourceOpener$
+          msg: "inject a fake SourceOpener (testutil.NewMemSourceOpener); do not construct the production opener in tests"
+        - pattern: ^pipeline\.NewOSOutputOpener$
+          msg: "inject a fake OutputOpener (testutil.NewMemOutputOpener); do not construct the production opener in tests"
+        - pattern: ^pipeline\.NewOSFileStater$
+          msg: "inject a fake FileStater (testutil.MemFileStater); do not construct the production stater in tests"
+        - pattern: ^validate\.NewOSPathResolver$
+          msg: "inject a fake PathResolver; do not construct the production resolver in tests"
+        - pattern: ^([A-Za-z_][A-Za-z0-9_]*\.)?RunProductionCLI$
+          msg: "do not call the production process entrypoint from tests; use injected seams DispatchCLI, RunMCPServer, or mcpserver.GlyphShiftServer.InvokeRegisteredTool"
+        - pattern: ^([A-Za-z_][A-Za-z0-9_]*\.)?DispatchProductionCLI$
+          msg: "use DispatchCLI with an injected pipeline.Runner instead of the production CLI composition root DispatchProductionCLI"
+        - pattern: ^([A-Za-z_][A-Za-z0-9_]*\.)?RunProductionMCP$
+          msg: "use RunMCPServer with an injected pipeline.Runner instead of the production MCP composition root RunProductionMCP"
+        - pattern: ConnectMCPClient
+          msg: "real MCP stdio client wiring belongs only under integrations/; do not use ConnectMCPClient from unit or BDD step code"
+        - pattern: mcp\.ClientSession
+          msg: "do not use mcp.ClientSession in unit or BDD tests; exercise MCP over stdio only from integrations/"
+        - pattern: ^mcp\.NewClient$
+          msg: "do not construct mcp.NewClient in unit or BDD tests; use integrations/ for real MCP client sessions"
+        - pattern: ^mcp\.IOTransport$
+          msg: "do not construct mcp.IOTransport for MCP stdio in unit or BDD tests; use integrations/ for real stdio wiring"
+  exclusions:
+    generated: lax
+    rules:
+      # forbidigo: restricted to *_test.go and features/steps (path-except). Production code is out of scope; integrations/* disables depguard/forbidigo.
+      - path-except: "(.+_test\\.go$|^features[\\\\/]steps[\\\\/].+\\.go$)"
+        linters:
+          - forbidigo
+      - path: "^integrations/"
+        linters:
+          - depguard
+          - forbidigo
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+formatters:
+  enable:
+    - goimports
+    - gofumpt
+  settings:
+    gofumpt:
+      extra-rules: true

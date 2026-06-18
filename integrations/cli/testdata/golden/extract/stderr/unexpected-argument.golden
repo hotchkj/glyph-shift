@@ -1,0 +1,1 @@
+{"argument":"extra-positional-arg","error":"unexpected_argument","hint":"extract accepts --source, --lines, --destination, plus optional --force, --append, --mkdir, and --preview; no trailing positional arguments. Other CLI commands include split, blocks, transform, version, mcp, and help."}

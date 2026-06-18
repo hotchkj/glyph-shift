@@ -1,0 +1,1 @@
+{"error":"directory_not_file","hint":"Path must point to a regular file; directories are not valid sources.","src":"WORKSPACE\\src"}

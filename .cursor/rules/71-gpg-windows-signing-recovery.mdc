@@ -1,0 +1,5 @@
+---
+description: "Windows GPG commit signing: agents may reset gpg-agent/pinentry when signing hangs — never disable signing"
+alwaysApply: false
+---
+Signing stays on. When `git commit` hangs or errors on GPG, agents are permitted to reset the agent. Read docs/kb/gpg-windows-recovery.md — disabling signing or using --no-gpg-sign is rejected.

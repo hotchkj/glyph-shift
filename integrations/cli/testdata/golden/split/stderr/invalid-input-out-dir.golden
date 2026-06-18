@@ -1,0 +1,1 @@
+{"error":"invalid_input","hint":"validate out-dir: path traversal outside allowed root: path traversal","out_dir":"WORKSPACE/tmp/evil"}

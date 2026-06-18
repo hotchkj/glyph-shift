@@ -1,0 +1,5 @@
+---
+description: "Diagnose before fixing — state Expected/Observed/Gap, find root cause, one change at a time"
+alwaysApply: false
+---
+State Expected/Observed/Gap before any fix. Read docs/kb/debugging.md — symptom-chasing and batched speculative fixes are rejected.

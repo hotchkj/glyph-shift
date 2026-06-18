@@ -1,0 +1,23 @@
+# Default
+* text=auto
+
+# Windows batch scripts: keep CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Explicitly mark known text types (backup if auto-detection misclassifies).
+# Go sources: force LF in repo and on checkout so formatters (gofumpt) match CI on all OSes.
+*.go text eol=lf
+
+# CLI integration goldens: byte-faithful; Git must not rewrite line endings on checkout.
+integrations/cli/testdata/golden/** -text
+*.md text
+*.yml text
+*.yaml text
+*.sh text
+*.json text
+.gitignore text
+.env.example text
+
+# Byte-faithful CRLF fixture: keep checkout clean on non-Windows runners.
+features/testdata/inputs/heading-start-crlf.md text eol=crlf

@@ -1,0 +1,4 @@
+---
+alwaysApply: true
+---
+Go code requires docs/kb/go.md — check repo-local Go/lint context before flagging semantics-sensitive issues.

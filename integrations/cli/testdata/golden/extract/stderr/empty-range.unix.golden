@@ -1,0 +1,1 @@
+{"error":"empty_range","hint":"The requested line range is empty (start after end). Adjust --lines (CLI) or the lines input (MCP).","range_end":49,"range_start":50,"src":"WORKSPACE/plan.md"}

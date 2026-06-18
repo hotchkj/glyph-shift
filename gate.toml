@@ -1,0 +1,75 @@
+# Repository gate policy for mage-gate v0.7.0 (see mage_gate_*.go).
+#
+# quality_scope — production/scoring boundary for coverage, CRAP, and mutation measurement.
+# package pattern lists what go test runs against; exclusions are applied through
+# quality_scope options.
+#
+# compile — go build argv for tag-bearing production surfaces.
+# unittests — argv options and duration policy for the primary coverage-bearing CoveredTest pass.
+# The duration gate measures package elapsed time from that pass; -p=1 keeps package measurements
+# stable under coverage instrumentation without excluding tests.
+# integrationtests — optional second go test (gate.Test only), no merged coverage profile.
+# performance — portable BDD performance contracts (gate.Test only), no merged coverage profile.
+# stricttiming — strict wall-clock BDD contracts (gate.Test only), run outside validate.
+# Performance and strict-timing suites are also gate.Test signals, not merged coverage inputs.
+
+[thresholds]
+coverage_min = 88
+crap_max = 8.0
+mutation_sites_max = 50
+# Scan-derived test-profile coverage (gremlins dry-run). 0 is a valid pass-through threshold.
+mutation_coverage_min = 90
+# Kill-mode minimum mutation kill rate percent; mutationKills target only, outside pre-commit validate.
+# Use 0 to run kills without a rate gate.
+mutation_kills_min_rate = 0
+
+[lint]
+config = ".golangci.yml"
+tool_spec = "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.11.4"
+
+[quality_scope]
+packages = "./..."
+tags = ["mage"]
+# Exclude harness/test-only trees from scoring surfaces.
+exclude = ["features", "integrations", "internal/testutil", "internal/goldenreader", "testdata"]
+test_file_patterns = ["*_test.go"]
+
+[deadcode]
+args = ["-test"]
+tool_spec = "golang.org/x/tools/cmd/deadcode@v0.44.0"
+
+[markdownlint]
+tool_spec = "github.com/shinagawa-web/gomarklint/v3@v3.2.3"
+args = ["--config", ".gomarklint.json"]
+
+[crap]
+tool_spec = "github.com/fzipp/gocyclo/cmd/gocyclo@v0.6.0"
+args = ["-ignore", "^(features|integrations|testdata)(/|\\\\)|^internal(/|\\\\)(testutil|goldenreader)(/|\\\\)|_test\\.go$"]
+
+[gremlins]
+tool_spec = "github.com/hotchkj/gremlins/cmd/gremlins@v0.6.1-pre.1"
+
+[mutation_kills]
+args = ["--workers=1", "--test-cpu=1", "--timeout-coefficient=1"]
+
+[compile]
+tags = ["integration", "performance", "bdd_strict_timing"]
+
+[unittests]
+duration_max = 10.0
+args = ["-p=1"]
+shuffle = true
+
+[integrationtests]
+tags = "integration"
+shuffle = true
+
+[performance]
+packages = "./features"
+tags = "performance"
+shuffle = true
+
+[stricttiming]
+packages = "./features"
+tags = "bdd_strict_timing"
+shuffle = true

@@ -1,0 +1,97 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "dependencyDashboard": true,
+  "separateMajorMinor": true,
+  "constraintsFiltering": "strict",
+  "env": {
+    "GOPRIVATE": "github.com/hotchkj/*",
+    "GONOPROXY": "github.com/hotchkj/*",
+    "GONOSUMDB": "github.com/hotchkj/*"
+  },
+  "postUpdateOptions": ["gomodTidy"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Go tool pins in gate.toml (tool_spec)",
+      "managerFilePatterns": ["/^gate\\.toml$/"],
+      "matchStrings": [
+        "tool_spec\\s*=\\s*\"(?<depName>[^@\"]+)@(?<currentValue>[^\"]+)\""
+      ],
+      "datasourceTemplate": "go"
+    },
+    {
+      "customType": "regex",
+      "description": "go run module@version pins outside go.mod",
+      "managerFilePatterns": [
+        "/\\.github/workflows/.+\\.ya?ml$/",
+        "/^\\.goreleaser\\.ya?ml$/",
+        "/^\\.githooks/pre-commit$/",
+        "/^README\\.md$/"
+      ],
+      "matchStrings": [
+        "go\\s+run\\s+(?<depName>[^\\s@]+)@(?<currentValue>[^\\s\"'`\\)]+)(?=[\\s\"'`\\)]|$)"
+      ],
+      "datasourceTemplate": "go"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Do not auto-bump the minimum Go version directive",
+      "matchManagers": ["gomod"],
+      "matchDepNames": ["go"],
+      "matchDepTypes": ["golang"],
+      "enabled": false
+    },
+    {
+      "description": "Internal private library — review updates explicitly",
+      "matchManagers": ["gomod"],
+      "matchPackageNames": ["github.com/hotchkj/mage-gate"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Go module path / tag major bumps need explicit review",
+      "matchManagers": ["gomod"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "GitHub Actions major tag bumps need explicit review",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Label golang.org/x minor/patch bumps for extra review",
+      "matchManagers": ["gomod"],
+      "matchPackageNames": ["golang.org/x/**"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "addLabels": ["go-x-module"]
+    },
+    {
+      "description": "Label v0.x tagged module minor/patch bumps for extra review",
+      "matchManagers": ["gomod"],
+      "matchCurrentValue": "/^0\\./",
+      "matchUpdateTypes": ["minor", "patch"],
+      "addLabels": ["go-v0-module"]
+    },
+    {
+      "description": "Keep mage CLI pin aligned across CI, hooks, and docs",
+      "matchManagers": ["custom.regex"],
+      "matchDepNames": ["github.com/magefile/mage"],
+      "groupName": "magefile/mage"
+    },
+    {
+      "description": "Gate tool pins update together when practical",
+      "matchManagers": ["custom.regex"],
+      "matchFileNames": ["gate.toml"],
+      "groupName": "gate.toml go tools"
+    },
+    {
+      "description": "Regex-managed Go tool major bumps need explicit review",
+      "matchManagers": ["custom.regex"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    }
+  ]
+}

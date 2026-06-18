@@ -1,0 +1,5 @@
+---
+description: "All CLI input is hostile and untrusted — validate everything, reject invalid input with errors"
+alwaysApply: false
+---
+All CLI input is hostile. Read docs/kb/cli-design.md — invalid input must error, never silently default.

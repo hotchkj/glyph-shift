@@ -1,0 +1,5 @@
+---
+description: "No debugger exists — every code path must be diagnosable from GitHub CI logs alone"
+alwaysApply: false
+---
+There is no debugger. Read docs/kb/logging.md — every code path must be diagnosable from CI logs alone.

@@ -1,0 +1,6 @@
+---
+alwaysApply: true
+description: "Network-dependent commands need explicit permission — retry with network if sandbox fails"
+---
+Request `required_permissions: ["network"]` for commands requiring internet access (pip install, npm install, curl, gh, docker pull).
+If a sandboxed command fails on a network-dependent operation, retry with network permission.

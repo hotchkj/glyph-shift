@@ -1,0 +1,7 @@
+Usage: glyph-shift mcp [options]
+
+Run as an MCP (Model Context Protocol) server over stdio.
+
+Options:
+  -workspace-root string
+    	workspace root directory (default: current directory)

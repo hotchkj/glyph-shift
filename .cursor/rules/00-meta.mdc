@@ -1,0 +1,8 @@
+---
+description: MUST Read docs/kb/rule-creation.md before create/edit of any .cursor/rules/*.mdc or .roo/rules/*.md. No new rule text or mirror drift without KB; frontmatter descriptions are warning labels not summaries.
+globs:
+  - ".cursor/rules/*.mdc"
+  - ".roo/rules/*.md"
+alwaysApply: false
+---
+Read and follow docs/kb/rule-creation.md before creating or modifying rules.

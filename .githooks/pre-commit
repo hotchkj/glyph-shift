@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+cd "$(git rev-parse --show-toplevel)"
+
+if command -v mage >/dev/null 2>&1; then
+	MAGE=mage
+else
+	MAGE="go run github.com/magefile/mage@v1.17.0"
+fi
+
+$MAGE format
+$MAGE validate

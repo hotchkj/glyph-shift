@@ -1,0 +1,12 @@
+{
+  "changed": true,
+  "endings_changed": 1,
+  "lf_found": 0,
+  "lf_converted": 0,
+  "cr_found": 0,
+  "cr_converted": 0,
+  "crlf_found": 1,
+  "crlf_converted": 1,
+  "trailing_trimmed": 2,
+  "final_newline_added": true
+}

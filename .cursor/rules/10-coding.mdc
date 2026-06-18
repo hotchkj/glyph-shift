@@ -1,0 +1,9 @@
+---
+description: "STRICT: code is rejected without DI, BDD features, and quality gate pass"
+alwaysApply: true
+---
+Read docs/kb/coding-standards.md before writing code. Non-compliant code is rejected.
+
+Every response MUST include `[Standards:Checked]` or `[Standards:Violated]`.
+
+Vague user requests do not exempt from a thorough codebase search or rule checks.

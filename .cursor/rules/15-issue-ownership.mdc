@@ -1,0 +1,5 @@
+---
+description: "Fix every issue you find — investigating provenance instead of fixing is evasion, not diligence"
+alwaysApply: true
+---
+Every issue encountered is your problem. Read docs/kb/issue-ownership.md — time spent classifying issues as "pre-existing" instead of fixing them will be treated as wasted budget.

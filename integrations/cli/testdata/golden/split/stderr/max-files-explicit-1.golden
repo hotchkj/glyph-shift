@@ -1,0 +1,1 @@
+{"error":"max_files_exceeded","hint":"split: maximum output file count exceeded: would create 2 outputs (limit 1)","max_files":1,"would_create_count":2}

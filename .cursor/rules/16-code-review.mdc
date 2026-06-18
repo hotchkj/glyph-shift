@@ -1,0 +1,5 @@
+---
+description: "Reviewing or auditing code requires the same standards as writing it — naming, error handling, code smells"
+alwaysApply: false
+---
+Code review applies the same standards as authoring. Read docs/kb/coding-standards.md, docs/kb/code-smells.md, and docs/kb/error-handling.md before reviewing code.

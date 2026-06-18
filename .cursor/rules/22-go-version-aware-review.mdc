@@ -1,0 +1,4 @@
+---
+alwaysApply: true
+---
+Before flagging Go findings that depend on language semantics or evolving idioms, read `go.mod` and `.golangci.yml`.

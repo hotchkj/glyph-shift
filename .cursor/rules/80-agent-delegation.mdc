@@ -1,0 +1,28 @@
+---
+description: Use when orchestrating work or delegating subagents
+alwaysApply: false
+---
+Before any significant workload: read docs/kb/agent-delegation.md to determine how to break down the task
+
+
+## Model selection
+
+| Type | Rule |
+|------|------|
+| Custom (`task-executor`, `critical-reviewer`) | Do not pass `model`; defined in agent files. |
+| Built-in (`explore`, `shell`, `generalPurpose`) | Always `model: "fast"` unless: prior fast attempt failed OR task requires architectural judgment OR requirements are ambiguous and need interpretation. |
+
+## Subagent type selection
+
+| Task | Type |
+|------|------|
+| Quick reads / searches | `explore` |
+| Running shell commands | `shell` |
+| 1–2 file edits | `generalPurpose` |
+| Multi-file implementation | `task-executor` |
+| Code review / audits | `critical-reviewer` |
+| ≥10 files across ≥2 modules with dependencies, or ≥4 coordinated task-executor calls | `task-orchestrator` |
+
+## Task orchestrator (multi-layer delegation)
+
+Use `task-orchestrator` when scale or coordination thresholds are met (see table above). The orchestrator owns explore → execute → review within a bounded scope; top-level orchestrator reviews the report and owns overall direction.

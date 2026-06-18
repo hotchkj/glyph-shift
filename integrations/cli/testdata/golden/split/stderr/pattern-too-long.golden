@@ -1,0 +1,1 @@
+{"error":"pattern_too_long","field":"delimiter","hint":"validate pattern: length 4097 exceeds limit 4096: regex pattern too long"}

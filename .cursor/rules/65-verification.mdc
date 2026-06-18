@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+Correctness requires evidence. Read docs/kb/verification.md — assertions without test/lint/diff proof are rejected.
+If review output conflicts with repo-local lint, static analysis, or the gate, reconcile it before editing further.

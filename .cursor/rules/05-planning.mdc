@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+description: "Plans contain building blocks and interfaces only — questions, options, and code will be rejected"
+---
+Read docs/kb/planning.md before writing any plan. Plans with open questions, options, or implementation detail are rejected.

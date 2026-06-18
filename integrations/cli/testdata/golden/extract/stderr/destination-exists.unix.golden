@@ -1,0 +1,1 @@
+{"dest":"WORKSPACE/output.txt","error":"destination_exists","hint":"Use --force on the CLI or force: true in MCP JSON to overwrite, or append when the operation supports append mode."}
